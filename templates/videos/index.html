@@ -1,0 +1,61 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        {% if perms.products.add_product %}
+        <div class="col-3">
+            <div class="card">
+                <div class="card-body">
+                    Add new video
+                    <form action="{% url 'add_new_video'%} " method="post" class="post-form"
+                        enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- <div class="input-group mb-4"> -->
+                        <!-- <label >Name:</label> -->
+                        {{ form }}
+                        <!-- </div> -->
+                        <button type="submit" class="save btn btn-dark">Send</button>
+                    </form>
+                </div>
+                {% if form.errors %}
+                <ul class="errorlist">
+                    {% for field, errors in form.errors.items %}
+                        <li>{{ field }}:
+                            <ul>
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% for video in videos %}
+        <div class="col-3">
+            <div class="card">
+                <video width="320" height="240" controls class="card-img-top float-start">
+                    <source src="{{ video.video_file.url }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ video.name }}</h5>
+                    <!-- <div class="price-container">
+                                <p class="card-title video-price">{{ video.price }} USD</p>
+                            </div> -->
+                    <p class="card-text">
+                        {{ video.description }}
+                    </p>
+                    <a class="btn btn-tomato" href="{% url 'get_video' id=video.id %}">More info</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
